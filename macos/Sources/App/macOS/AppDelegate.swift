@@ -536,10 +536,14 @@ class AppDelegate: NSObject,
         // Build the command from the "e" query parameter
         // Arguments are space-separated in a single "e" parameter
         let command: String? = queryItems.first(where: { $0.name == "e" })?.value
+        let cwd: String? = queryItems.first(where: { $0.name == "cwd" })?.value
 
         var config = Ghostty.SurfaceConfiguration()
         if let command = command, !command.isEmpty {
             config.initialInput = "\(command); exit\n"
+        }
+        if let cwd = cwd, !cwd.isEmpty {
+            config.workingDirectory = cwd
         }
 
         switch host {
