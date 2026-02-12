@@ -533,8 +533,12 @@ class AppDelegate: NSObject,
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         let queryItems = components?.queryItems ?? []
 
-        // Build the command from the "e" query parameter
-        // Arguments are space-separated in a single "e" parameter
+        // The "e" query parameter contains the command to run.
+        // When coming from the CLI (+new-tab), each argument is individually
+        // shell-quoted and joined with spaces, then percent-encoded.
+        // The command is sent as initialInput (stdin) to the user's login
+        // shell, NOT as a direct command replacement. This ensures login
+        // scripts run first to set up PATH and other environment variables.
         let command: String? = queryItems.first(where: { $0.name == "e" })?.value
         let cwd: String? = queryItems.first(where: { $0.name == "cwd" })?.value
 

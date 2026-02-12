@@ -1000,6 +1000,8 @@ typedef struct {
 typedef struct {
   // This should be a null terminated list of strings.
   const char **arguments;
+  // Working directory (null-terminated), or NULL for default.
+  const char *cwd;
 } ghostty_ipc_action_new_window_s;
 
 // apprt.ipc.Action.NewTab (same structure as NewWindow)

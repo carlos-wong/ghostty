@@ -81,10 +81,17 @@ pub const Action = union(enum) {
         /// It is an error for this to be non-`null`, but zero length.
         arguments: ?[][:0]const u8,
 
+        /// Working directory to set for the new window/tab. If this is `null`
+        /// the default working directory will be used.
+        cwd: ?[:0]const u8 = null,
+
         pub const C = extern struct {
             /// null terminated list of arguments
             /// it will be null itself if there are no arguments
             arguments: ?[*]?[*:0]const u8,
+
+            /// working directory (null-terminated), or null for default
+            cwd: ?[*:0]const u8,
 
             pub fn deinit(self: *NewWindow.C, alloc: Allocator) void {
                 if (self.arguments) |arguments| alloc.free(arguments);
@@ -105,6 +112,8 @@ pub const Action = union(enum) {
             } else {
                 result.arguments = null;
             }
+
+            result.cwd = if (self.cwd) |cwd| cwd.ptr else null;
 
             return result;
         }
@@ -155,8 +164,8 @@ pub const Action = union(enum) {
         // At the time of writing, we don't promise ABI compatibility
         // so we can change this but I want to be aware of it.
         assert(@sizeOf(CValue) == switch (@sizeOf(usize)) {
-            4 => 4,
-            8 => 8,
+            4 => 8,
+            8 => 16,
             else => unreachable,
         });
     }

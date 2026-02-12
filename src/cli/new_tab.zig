@@ -13,6 +13,9 @@ pub const Options = struct {
     /// If set, open up a new tab in a custom instance of Ghostty.
     class: ?[:0]const u8 = null,
 
+    /// If set, open the new tab in the given working directory.
+    cwd: ?[:0]const u8 = null,
+
     /// If `-e` is found in the arguments, this will contain all of the
     /// arguments to pass to Ghostty as the command.
     _arguments: ?[][:0]const u8 = null,
@@ -69,6 +72,12 @@ pub const Options = struct {
 /// will use the default command (either specified with `command` in your config
 /// or your default shell as configured on your system).
 ///
+/// When `-e` is specified, the command is executed inside the user's default
+/// login shell (not as a direct replacement). This ensures that login scripts
+/// (e.g. `.zshrc`, `.bash_profile`) run first to set up the environment
+/// (PATH, etc.). The command is sent as stdin input with `; exit` appended,
+/// so the tab closes after the command finishes.
+///
 /// On macOS, this command uses a URL scheme (`ghostty://`) to communicate with
 /// the running Ghostty instance. If Ghostty is not running, macOS will launch
 /// it automatically.
@@ -80,6 +89,9 @@ pub const Options = struct {
 ///
 ///   * `--class=<class>`: If set, open up a new tab in a custom instance of
 ///     Ghostty. The class must be a valid GTK application ID.
+///
+///   * `--cwd=<directory>`: Set the working directory for the new tab. If
+///     not specified, the default working directory will be used.
 ///
 ///   * `-e`: Any arguments after this will be interpreted as a command to
 ///     execute inside the new tab instead of the default command.
@@ -149,6 +161,7 @@ fn runArgs(
         .new_tab,
         .{
             .arguments = opts._arguments,
+            .cwd = opts.cwd,
         },
     ) catch |err| switch (err) {
         error.IPCFailed => {

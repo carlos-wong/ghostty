@@ -13,6 +13,9 @@ pub const Options = struct {
     /// If set, open up a new window in a custom instance of Ghostty.
     class: ?[:0]const u8 = null,
 
+    /// If set, open the new window in the given working directory.
+    cwd: ?[:0]const u8 = null,
+
     /// If `-e` is found in the arguments, this will contain all of the
     /// arguments to pass to Ghostty as the command.
     _arguments: ?[][:0]const u8 = null,
@@ -160,6 +163,7 @@ fn runArgs(
         .new_window,
         .{
             .arguments = opts._arguments,
+            .cwd = opts.cwd,
         },
     ) catch |err| switch (err) {
         error.IPCFailed => {
