@@ -519,6 +519,48 @@ class AppDelegate: NSObject,
         return true
     }
 
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls {
+            guard url.scheme == "ghostty" else { continue }
+            handleGhosttyURL(url)
+        }
+    }
+
+    private func handleGhosttyURL(_ url: URL) {
+        guard let host = url.host else { return }
+
+        // Parse query parameters
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        let queryItems = components?.queryItems ?? []
+
+        // Build the command from the "e" query parameter
+        // Arguments are space-separated in a single "e" parameter
+        let command: String? = queryItems.first(where: { $0.name == "e" })?.value
+
+        var config = Ghostty.SurfaceConfiguration()
+        if let command = command, !command.isEmpty {
+            config.initialInput = "\(command); exit\n"
+        }
+
+        switch host {
+        case "new-tab":
+            _ = TerminalController.newTab(
+                ghostty,
+                from: TerminalController.preferredParent?.window,
+                withBaseConfig: config
+            )
+
+        case "new-window":
+            _ = TerminalController.newWindow(ghostty, withBaseConfig: config)
+
+        default:
+            return
+        }
+
+        // Activate the app and bring it to the front
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
     /// This is called for the dock right-click menu.
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
         return dockMenu

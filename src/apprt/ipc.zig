@@ -68,6 +68,11 @@ pub const Action = union(enum) {
     /// The arguments to pass to Ghostty as the command.
     new_window: NewWindow,
 
+    /// The arguments to pass to Ghostty as the command for a new tab.
+    new_tab: NewTab,
+
+    pub const NewTab = NewWindow;
+
     pub const NewWindow = struct {
         /// A list of command arguments to launch in the new window. If this is
         /// `null` the command configured in the config or the user's default
@@ -108,6 +113,7 @@ pub const Action = union(enum) {
     /// Sync with: ghostty_ipc_action_tag_e
     pub const Key = enum(c_uint) {
         new_window,
+        new_tab,
     };
 
     /// Sync with: ghostty_ipc_action_u

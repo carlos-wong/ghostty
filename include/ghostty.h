@@ -1002,13 +1002,18 @@ typedef struct {
   const char **arguments;
 } ghostty_ipc_action_new_window_s;
 
+// apprt.ipc.Action.NewTab (same structure as NewWindow)
+typedef ghostty_ipc_action_new_window_s ghostty_ipc_action_new_tab_s;
+
 typedef union {
   ghostty_ipc_action_new_window_s new_window;
+  ghostty_ipc_action_new_tab_s new_tab;
 } ghostty_ipc_action_u;
 
 // apprt.ipc.Action.Key
 typedef enum {
   GHOSTTY_IPC_ACTION_NEW_WINDOW,
+  GHOSTTY_IPC_ACTION_NEW_TAB,
 } ghostty_ipc_action_tag_e;
 
 //-------------------------------------------------------------------

@@ -42,6 +42,17 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>ghostty</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>com.mitchellh.ghostty</string>
+		</dict>
+	</array>
 	<key>GhosttyBuild</key>
 	<string></string>
 	<key>GhosttyCommit</key>
